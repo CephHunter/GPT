@@ -9,8 +9,8 @@ typedef struct queue_t {
 } queue_t;
 
 queue_t* queue_create(unsigned int buf_depth);
-void queue_free(queue_t* buffer);
-void queue_push(queue_t* buffer, char data);
-int queue_pop(queue_t* buffer, char* data);
+void queue_free(queue_t** buffer);
+void queue_enqueue(queue_t* buffer, char data);
+int queue_dequeue(queue_t* buffer, char* data);
 
 #endif // QUEUE_H

@@ -10,8 +10,9 @@ int main()
     stack_push(stack1, 'C');
     stack_push(stack1, 'D');
 
-    while (stack_pop(stack1, &data)) printf("%c\n", data);
+    while (stack_pop(stack1, &data))
+        printf("%c\n", data);
 
-    stack_free(stack1);
+    stack_free(&stack1);
     return 0;
 }
