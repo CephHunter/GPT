@@ -1,42 +1,66 @@
 #include "queue.h"
 #include <stdlib.h>
 
-queue_t* queue_create(unsigned int buf_depth) {
-    queue_t* buffer = malloc(sizeof(*buffer));
-    buffer->BUFF_DEPTH = buf_depth;
-    buffer->ptr = 0;
-    buffer->buffer = malloc(sizeof *(buffer->buffer) * buf_depth);
+queue_t* queue_create() {
+    queue_t* buffer = malloc(sizeof *buffer);
+    buffer->data = 0;
+    buffer->next = 0;
     return buffer;
 }
 
 void queue_free(queue_t** buffer) {
     if (*buffer) {
-        free((*buffer)->buffer);
-        free(*buffer);
+        queue_t* current = *buffer;
+        queue_t* next;
+        while (current) {
+            next = current->next;
+            free(current);
+            current = next;
+        }
         *buffer = 0;
     }
 }
 
 void queue_enqueue(queue_t* buffer, char data) {
     if (buffer) {
-        if (buffer->BUFF_DEPTH > buffer->ptr) {
-            buffer->buffer[buffer->ptr] = data;
-            buffer->ptr++;
+        queue_t* next = malloc(sizeof *next);
+        if (next) {
+            next->next = 0;
+            next->data = 0;
+            while (buffer->next) {
+                buffer = buffer->next;
+            }
+            buffer->data = data;
+            buffer->next = next;
         }
     }
 }
 
-int queue_dequeue(queue_t* buffer, char* data) {
+int queue_dequeue(queue_t** buffer, char* data) {
     if (buffer && data) {
         *data = 0;
-        if (buffer->ptr > 0) {
-            *data = buffer->buffer[0];
-            for (unsigned int i = 0; i < buffer->BUFF_DEPTH-1; i++) {
-                buffer->buffer[i] = buffer->buffer[i+1];
-            }
-            buffer->ptr--;
+        queue_t* current = *buffer;
+        if (current->next) {
+            *data = current->data;
+            *buffer = current->next;
+            free(current);
             return 1;
         }
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
